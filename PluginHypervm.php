@@ -9,7 +9,12 @@ require_once 'library/CE/NE_Network.php';
 */
 class PluginHypervm extends ServerPlugin
 {
-    public $usesPackageName = true;
+    public $features = array(
+        'packageName' => true,
+        'testConnection' => false,
+        'showNameservers' => true
+    );
+
     function getVariables()
     {
         /* Specification
