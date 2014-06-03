@@ -25,70 +25,70 @@ class PluginHypervm extends ServerPlugin
         */
 
         $variables = array (
-                   /*T*/"Name"/*/T*/ => array (
+                   lang("Name") => array (
                                         "type"=>"hidden",
                                         "description"=>"Used By CE to show plugin - must match how you call the action function names",
                                         "value"=>"Hypervm"
                                        ),
-                   /*T*/"Description"/*/T*/ => array (
+                   lang("Description") => array (
                                         "type"=>"hidden",
-                                        "description"=>/*T*/"Description viewable by admin in server settings"/*/T*/,
-                                        "value"=>/*T*/"HyperVM control panel integration"/*/T*/
+                                        "description"=>lang("Description viewable by admin in server settings"),
+                                        "value"=>lang("HyperVM control panel integration")
                                        ),
-                    /*T*/"HyperVM API url"/*/T*/ => array (
+                    lang("HyperVM API url") => array (
                                     "type"            =>    "text",
-                                    "description"     =>    /*T*/"Example http://cp.yourdomain.com:8888/webcommand.php"/*/T*/,
+                                    "description"     =>    lang("Example http://cp.yourdomain.com:8888/webcommand.php"),
                                     "value"           =>    ""
                             ),
-                   /*T*/"Username"/*/T*/ => array (
+                   lang("Username") => array (
                                         "type"=>"text",
-                                        "description"=>/*T*/"Username used to connect to HyperVM"/*/T*/,
+                                        "description"=>lang("Username used to connect to HyperVM"),
                                         "value"=>""
                                        ),
-                   /*T*/"Password"/*/T*/ => array (
+                   lang("Password") => array (
                                         "type"=>"password",
-                                        "description"=>/*T*/"Password used to connect to HyperVM"/*/T*/,
+                                        "description"=>lang("Password used to connect to HyperVM"),
                                         'value'         => '',
                                         'encryptable'   => true,
                                        ),
-                   /*T*/"Failure E-mail"/*/T*/ => array (
+                   lang("Failure E-mail") => array (
                                         "type"=>"text",
-                                        "description"=>/*T*/"E-mail address HyperVM error messages will be sent to"/*/T*/,
+                                        "description"=>lang("E-mail address HyperVM error messages will be sent to"),
                                         "value"=>""
                                         ),
-                    /*T*/"VM Type"/*/T*/ => array(
+                    lang("VM Type") => array(
                                     "type"            =>    "text",
-                                    "description"     => /*T*/"Enter the type of VM this server creates.  (openvz or xen)"/*/T*/,
+                                    "description"     => lang("Enter the type of VM this server creates.  (openvz or xen)"),
                                     "value"           => "openvz"
                             ),
-                    /*T*/"VM Name Custom Field"/*/T*/ => array(
+                    lang("VM Name Custom Field") => array(
                                     "type"            =>    "text",
-                                    "description"     => /*T*/"Enter the name of the package custom field that will hold the VM name for HyperVM."/*/T*/,
+                                    "description"     => lang("Enter the name of the package custom field that will hold the VM name for HyperVM."),
                                     "value"           => ""
                             ),
-                    /*T*/"VM Password Custom Field"/*/T*/ => array(
+                    lang("VM Password Custom Field") => array(
                                     "type"            => "text",
-                                    "description"     => /*T*/"Enter the name of the package custom field that will hold the VM password"/*/T*/,
+                                    "description"     => lang("Enter the name of the package custom field that will hold the VM password"),
                                     "value"           => ""
                             ),
-                    /*T*/"Number Of Ips Custom Field"/*/T*/ => array(
+                    lang("Number Of Ips Custom Field") => array(
                                     "type"            =>    "text",
-                                    "description"     => /*T*/"Enter the name of the package custom field that will hold the Number Of Ips for HyperVM."/*/T*/,
+                                    "description"     => lang("Enter the name of the package custom field that will hold the Number Of Ips for HyperVM."),
                                     "value"           => ""
                             ),
-                    /*T*/"Hostname Custom Field"/*/T*/ => array(
+                    lang("Hostname Custom Field") => array(
                                     "type"            =>    "text",
-                                    "description"     => /*T*/"Enter the name of the package custom field that will hold the Hostname for HyperVM."/*/T*/,
+                                    "description"     => lang("Enter the name of the package custom field that will hold the Hostname for HyperVM."),
                                     "value"           => ""
                             ),
-                    /*T*/"Ostemplate Custom Field"/*/T*/ => array(
+                    lang("Ostemplate Custom Field") => array(
                                     "type"            =>    "text",
-                                    "description"     => /*T*/"Enter the name of the package custom field that will hold the Ostemplate for HyperVM."/*/T*/,
+                                    "description"     => lang("Enter the name of the package custom field that will hold the Ostemplate for HyperVM."),
                                     "value"           => ""
                             ),
-                   /*T*/"Actions"/*/T*/ => array (
+                   lang("Actions") => array (
                                         "type"=>"hidden",
-                                        "description"=>/*T*/"Current actions that are active for this plugin per server"/*/T*/,
+                                        "description"=>lang("Current actions that are active for this plugin per server"),
                                         //"value"=>"Create (Create Account),Delete (Delete Account),Suspend (Suspend Account),UnSuspend (Un-Suspend Account)"
 										"value"=>"Create,Delete,Suspend,UnSuspend"
                                        ),
