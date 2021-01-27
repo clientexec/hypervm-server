@@ -12,7 +12,8 @@ class PluginHypervm extends ServerPlugin
     public $features = array(
         'packageName' => true,
         'testConnection' => false,
-        'showNameservers' => true
+        'showNameservers' => true,
+        'upgrades' => true
     );
 
     function getVariables()
@@ -90,13 +91,14 @@ class PluginHypervm extends ServerPlugin
                                         "type"=>"hidden",
                                         "description"=>lang("Current actions that are active for this plugin per server"),
                                         //"value"=>"Create (Create Account),Delete (Delete Account),Suspend (Suspend Account),UnSuspend (Un-Suspend Account)"
-										"value"=>"Create,Delete,Suspend,UnSuspend"
+                                        "value"=>"Create,Delete,Suspend,UnSuspend"
                                        ),
            );
         return $variables;
     }
 
-    function create($args) {
+    function create($args)
+    {
 
         $args = $this->set_all_args($args);
         $newVPS = array();
@@ -107,62 +109,58 @@ class PluginHypervm extends ServerPlugin
         $newVPS['v-type'] = trim($args['server']['variables']['plugin_hypervm_VM_Type']);
 
         if ($newVPS['v-type'] != 'openvz' && $newVPS['v-type'] != 'xen') {
-
             CE_Lib::log(4, "HyperVM Create Fail: VM type must be one of openvz or xen.");
 
             throw new CE_Exception($this->user->lang("HyperVM Create Fail: VM type must be one of openvz or xen.", 200));
         }
 
-        if(isset($args['vmname']) && ($args['vmname'] != "")) {
+        if (isset($args['vmname']) && ($args['vmname'] != "")) {
             $newVPS['name'] = $args['vmname'];
         }
-        if(isset($args['vmnumofips']) && ($args['vmnumofips'] != "")) {
+        if (isset($args['vmnumofips']) && ($args['vmnumofips'] != "")) {
             $newVPS['v-num_ipaddress_f'] = $args['vmnumofips'];
         }
 
-        if(isset($args['customer']['email']) && ($args['customer']['email'] != "")) {
+        if (isset($args['customer']['email']) && ($args['customer']['email'] != "")) {
             $newVPS['v-contactemail'] = $args['customer']['email'];
         }
 
         $newVPS['v-send_welcome_f'] = "on";
 
-        if(isset($args['vmpassword']) && ($args['vmpassword'] != "")) {
+        if (isset($args['vmpassword']) && ($args['vmpassword'] != "")) {
             $newVPS['v-password'] = $args['vmpassword'];
         }
-        if(isset($args['vmostemplate']) && ($args['vmostemplate'] != "")) {
+        if (isset($args['vmostemplate']) && ($args['vmostemplate'] != "")) {
             $newVPS['v-ostemplate'] = $args['vmostemplate'];
         }
-        if(isset($args['package']['ip']) && ($args['package']['ip'] != "")) {
+        if (isset($args['package']['ip']) && ($args['package']['ip'] != "")) {
             $newVPS['v-syncserver'] = $args['package']['ip'];
         }
-        if(isset($args['package']['name_on_server']) && ($args['package']['name_on_server'] != "")) {
+        if (isset($args['package']['name_on_server']) && ($args['package']['name_on_server'] != "")) {
             $newVPS['v-plan_name'] = $args['package']['name_on_server'];
         }
-        if(isset($args['vmhostname']) && ($args['vmhostname'] != "")) {
+        if (isset($args['vmhostname']) && ($args['vmhostname'] != "")) {
             $newVPS['v-hostname'] = $args['vmhostname'];
         }
 
-        $create = $this->sendtohypervm($args,$newVPS);
+        $create = $this->sendtohypervm($args, $newVPS);
         if (is_a($create, 'CE_Error')) {
-
             // Create and log the error. Then throw an error.
             $errormsg = "HyperVM Create Fail.";
             CE_Lib::log(4, "plugin_hypervm::create::error: ".$errormsg);
 
             throw new CE_Exception($errormsg);
-
         } else {
-
             // Log the result
-            CE_Lib::log(4, "HyperVm:: Returned" . print_r($create,true));
+            CE_Lib::log(4, "HyperVm:: Returned" . print_r($create, true));
 
             return;
         }
-
     }
 
     // HyperVM does not support this currently.
-    function update($args) {
+    function update($args)
+    {
         $args = $this->set_all_args($args);
         $updateVPS = array();
         $updateVPS['login-class'] = "client";
@@ -171,27 +169,25 @@ class PluginHypervm extends ServerPlugin
         $updateVPS['action'] = "update";
         $updateVPS['subaction'] = "change_plan";
         $updateVPS['v-resourceplan_name'] = $args['PackageNameOnServer'];
-        $update = $this->sendtohypervm($args,$updateVPS);
+        $update = $this->sendtohypervm($args, $updateVPS);
 
         // Check the result
         if (is_a($update, 'CE_Error')) {
-
             // Create and log the error. Then throw an error.
             $errormsg = "HyperVM Update Account Failure for VPS {$args['vmname']}.vm";
             CE_Lib::log(4, "plugin_hypervm::update::error: ".$errormsg);
 
             throw new CE_Exception($errormsg);
-
         } else {
-
             // Log the result
-            CE_Lib::log(4, "HyperVm:: Returned" . print_r($update,true));
+            CE_Lib::log(4, "HyperVm:: Returned" . print_r($update, true));
 
             return;
         }
     }
 
-    function suspend($args) {
+    function suspend($args)
+    {
 
         $args = $this->set_all_args($args);
         $suspendVPS = array();
@@ -200,27 +196,25 @@ class PluginHypervm extends ServerPlugin
         $suspendVPS['name'] = $args['vmname'].".vm";
         $suspendVPS['action'] = "update";
         $suspendVPS['subaction'] = "disable";
-        $suspend = $this->sendtohypervm($args,$suspendVPS);
+        $suspend = $this->sendtohypervm($args, $suspendVPS);
 
         // Check the result
         if (is_a($suspend, 'CE_Error')) {
-
             // Create and log the error. Then throw an error.
             $errormsg = "HyperVM Suspend Account Failure for VPS {$args['vmname']}.vm";
             CE_Lib::log(4, "plugin_hypervm::suspend::error: ".$errormsg);
 
             throw new CE_Exception($errormsg);
-
         } else {
-
             // Log the result
-            CE_Lib::log(4, "HyperVm:: Returned" . print_r($suspend,true));
+            CE_Lib::log(4, "HyperVm:: Returned" . print_r($suspend, true));
 
             return;
         }
     }
 
-    function unsuspend($args) {
+    function unsuspend($args)
+    {
 
         $args = $this->set_all_args($args);
         $suspendVPS = array();
@@ -229,54 +223,50 @@ class PluginHypervm extends ServerPlugin
         $suspendVPS['name'] = $args['vmname'].".vm";
         $suspendVPS['action'] = "update";
         $suspendVPS['subaction'] = "enable";
-        $suspend = $this->sendtohypervm($args,$suspendVPS);
+        $suspend = $this->sendtohypervm($args, $suspendVPS);
 
         // Check the result
         if (is_a($suspend, 'CE_Error')) {
-
             // Create and log the error. Then throw an error.
             $errormsg = "HyperVM Unsuspend Account Failure for VPS {$args['vmname']}.vm";
             CE_Lib::log(4, "plugin_hypervm::suspend::error: ".$errormsg);
 
             throw new CE_Exception($errormsg);
-
         } else {
-
             // Log the result
-            CE_Lib::log(4, "HyperVm:: Returned" . print_r($suspend,true));
+            CE_Lib::log(4, "HyperVm:: Returned" . print_r($suspend, true));
 
             return;
         }
     }
 
-    function delete($args) {
+    function delete($args)
+    {
         $args = $this->set_all_args($args);
         $suspendVPS = array();
         $suspendVPS['login-class'] = "client";
         $suspendVPS['class'] = "vps";
         $suspendVPS['name'] = $args['vmname'].".vm";
         $suspendVPS['action'] = "delete";
-        $suspend = $this->sendtohypervm($args,$suspendVPS);
+        $suspend = $this->sendtohypervm($args, $suspendVPS);
 
         // Check the result
         if (is_a($suspend, 'CE_Error')) {
-
             // Create and log the error. Then throw an error.
             $errormsg = "HyperVM Delete Account Failure for VPS {$args['vmname']}.vm";
             CE_Lib::log(4, "plugin_hypervm::suspend::error: ".$errormsg);
 
-           throw new CE_Exception($errormsg);
-
+            throw new CE_Exception($errormsg);
         } else {
-
             // Log the result
-            CE_Lib::log(4, "HyperVm:: Returned" . print_r($suspend,true));
+            CE_Lib::log(4, "HyperVm:: Returned" . print_r($suspend, true));
 
             return;
         }
     }
 
-    function set_all_args($args) {
+    function set_all_args($args)
+    {
 
         $package = new UserPackage($args['package']['id'], $this->user);
         $vmname = $package->getCustomField($args['server']['variables']['plugin_hypervm_VM_Name_Custom_Field']);
@@ -294,42 +284,42 @@ class PluginHypervm extends ServerPlugin
         return $args;
     }
 
-    function sendtohypervm($args,$values) {
+    function sendtohypervm($args, $values)
+    {
         $post = 'login-name='.urlencode($args['server']['variables']['plugin_hypervm_Username']).'&login-password='.urlencode($args['server']['variables']['plugin_hypervm_Password']);
         foreach ($values as $key => $value) {
-            $post .= "&$key=".urlencode(str_replace('\'','',$value));
+            $post .= "&$key=".urlencode(str_replace('\'', '', $value));
         }
         $url = $args['server']['variables']['plugin_hypervm_HyperVM_API_url'];
         $result = NE_Network::curlRequest($this->settings, $url, $post, false, true);
         return $result;
     }
 
-	function doCreate($args)
-	{
-		$userPackage = new UserPackage($args['userPackageId']);
-		$this->create($this->buildParams($userPackage));
-		return 'Virtual Machine has been created.';
-	}
+    function doCreate($args)
+    {
+        $userPackage = new UserPackage($args['userPackageId']);
+        $this->create($this->buildParams($userPackage));
+        return 'Virtual Machine has been created.';
+    }
 
-	function doSuspend($args)
-	{
-		$userPackage = new UserPackage($args['userPackageId']);
-		$this->suspend($this->buildParams($userPackage));
-		return 'Virtual Machine has been suspended.';
-	}
+    function doSuspend($args)
+    {
+        $userPackage = new UserPackage($args['userPackageId']);
+        $this->suspend($this->buildParams($userPackage));
+        return 'Virtual Machine has been suspended.';
+    }
 
-	function doUnSuspend($args)
-	{
-		$userPackage = new UserPackage($args['userPackageId']);
-		$this->unsuspend($this->buildParams($userPackage));
-		return 'Virtual Machine has been unsuspended.';
-	}
+    function doUnSuspend($args)
+    {
+        $userPackage = new UserPackage($args['userPackageId']);
+        $this->unsuspend($this->buildParams($userPackage));
+        return 'Virtual Machine has been unsuspended.';
+    }
 
-	function doDelete($args)
-	{
-		$userPackage = new UserPackage($args['userPackageId']);
-		$this->delete($this->buildParams($userPackage));
-		return 'Virtual Machine has been deleted.';
-	}
+    function doDelete($args)
+    {
+        $userPackage = new UserPackage($args['userPackageId']);
+        $this->delete($this->buildParams($userPackage));
+        return 'Virtual Machine has been deleted.';
+    }
 }
-?>
